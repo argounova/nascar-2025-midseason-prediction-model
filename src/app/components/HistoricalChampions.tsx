@@ -26,7 +26,7 @@ const HistoricalChampions = ({ champions }: HistoricalChampionsProps) => {
               <span className="bg-blue-500 text-white px-3 py-1 rounded-full font-bold">
                 {champion.year}
               </span>
-              <strong>{champion.driver}</strong>
+              <strong className="text-black" >{champion.driver}</strong>
             </div>
             <div className="text-sm">
               {champion.wins} wins • {champion.avgFinish} avg finish • {champion.points} points
