@@ -1,103 +1,165 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React, { useState } from 'react';
+import Header from './components/Header';
+import Navigation from './components/Navigation';
+import SeasonProgress from './components/SeasonProgress';
+import ChampionshipLeaders from './components/ChampionshipLeaders';
+import CompetitiveAnalysis from './components/CompetitiveAnalysis';
+import DataScienceStats from './components/DataScienceStats';
+import DataPipeline from './components/DataPipeline';
+import ModelPerformance from './components/ModelPerformance';
+import FeatureImportanceChart from './components/FeatureImportanceChart';
+import HistoricalChampions from './components/HistoricalChampions';
+
+// Types
+interface Driver {
+  rank: number;
+  driver: string;
+  probability: number;
+  wins: number;
+  avgFinish: number;
+  points: number;
+  projected: number;
+}
+
+interface FeatureImportance {
+  rank: number;
+  feature: string;
+  importance: number;
+  description: string;
+}
+
+interface Champion {
+  year: number;
+  driver: string;
+  wins: number;
+  avgFinish: number;
+  points: number;
+}
+
+interface NavigationItem {
+  id: string;
+  title: string;
+  icon: string;
+}
+
+const NASCARChampionshipApp = () => {
+  const [activeSection, setActiveSection] = useState<string>('overview');
+
+  const sections: NavigationItem[] = [
+    { id: 'overview', title: 'Championship Predictions', icon: '🏆' },
+    { id: 'methodology', title: 'Data Science Methodology', icon: '🔬' },
+    { id: 'models', title: 'Model Performance', icon: '📊' },
+    { id: 'historical', title: 'Historical Context', icon: '📚' }
+  ];
+
+  const championshipData: Driver[] = [
+    { 
+      rank: 1, 
+      driver: 'Kyle Larson', 
+      probability: 2.5, 
+      wins: 3, 
+      avgFinish: 12.7, 
+      points: 613, 
+      projected: 2199 
+    },
+    { 
+      rank: 2, 
+      driver: 'Denny Hamlin', 
+      probability: 2.4, 
+      wins: 3, 
+      avgFinish: 13.3, 
+      points: 582, 
+      projected: 2091 
+    },
+    { 
+      rank: 3, 
+      driver: 'Chase Elliott', 
+      probability: 0.8, 
+      wins: 1, 
+      avgFinish: 10.6, 
+      points: 616, 
+      projected: 1877 
+    }
+  ];
+
+  const featureImportance: FeatureImportance[] = [
+    { rank: 1, feature: 'Laps Led', importance: 3.43, description: 'Indicates speed, dominance, and ability to control races' },
+    { rank: 2, feature: 'Race Wins', importance: 2.84, description: 'Direct correlation with championship success and playoff advancement' },
+    { rank: 3, feature: 'Driver Rating', importance: 2.35, description: 'Composite metric of consistent performance across all conditions' },
+    { rank: 4, feature: 'Average Finish', importance: 1.75, description: 'Consistency metric - avoiding poor finishes' },
+    { rank: 5, feature: 'Top-10 Rate', importance: 1.48, description: 'Reliability and steady point accumulation' }
+  ];
+
+  const historicalChampions: Champion[] = [
+    { year: 2024, driver: 'Kyle Larson', wins: 6, avgFinish: 12.9, points: 1183 },
+    { year: 2023, driver: 'William Byron', wins: 6, avgFinish: 11.0, points: 1255 },
+    { year: 2022, driver: 'Chase Elliott', wins: 5, avgFinish: 12.5, points: 1195 },
+    { year: 2021, driver: 'Kyle Larson', wins: 10, avgFinish: 9.08, points: 1452 },
+    { year: 2020, driver: 'Kevin Harvick', wins: 9, avgFinish: 7.33, points: 1394 }
+  ];
+
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'overview':
+        return (
+          <div className="space-y-8">
+            <ChampionshipLeaders drivers={championshipData} />
+            <CompetitiveAnalysis />
+          </div>
+        );
+      
+      case 'methodology':
+        return (
+          <section className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-8 border-l-4 border-green-500">
+            <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+              🔬 Data Science Methodology
+            </h2>
+            <div className="space-y-6">
+              <DataScienceStats />
+              <DataPipeline />
+            </div>
+          </section>
+        );
+      
+      case 'models':
+        return (
+          <section className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-8 border-l-4 border-purple-500">
+            <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+              📊 Model Architecture & Performance
+            </h2>
+            <div className="space-y-6">
+              <ModelPerformance />
+              <FeatureImportanceChart features={featureImportance} />
+            </div>
+          </section>
+        );
+      
+      case 'historical':
+        return <HistoricalChampions champions={historicalChampions} />;
+      
+      default:
+        return <div>Select a section</div>;
+    }
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800">
+      <div className="max-w-7xl mx-auto bg-white shadow-2xl min-h-screen">
+        <Header />
+        <Navigation 
+          sections={sections} 
+          activeSection={activeSection} 
+          onSectionChange={setActiveSection} 
         />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <SeasonProgress />
+        <main className="p-8">
+          {renderContent()}
+        </main>
+      </div>
     </div>
   );
-}
+};
+
+export default NASCARChampionshipApp;
